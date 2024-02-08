@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    <groupId>com.github.yihtserns</groupId>
+    <artifactId>spring-web-without-remoting</artifactId>
+    <version>5.3.31-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Spring Web without Spring Remoting package</name>
+    <description>Spring Web 5.x with `org.springframework.remoting` package removed, to fix CVE-2016-1000027 -  see https://github.com/spring-projects/spring-framework/issues/24434</description>
+    <url>http://github.com/yihtserns/spring-web-without-remoting</url>
+    <issueManagement>
+        <url>http://github.com/yihtserns/spring-web-without-remoting/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:yihtserns/spring-web-without-remoting.git</connection>
+        <developerConnection>scm:git:git@github.com:yihtserns/spring-web-without-remoting.git</developerConnection>
+        <url>git@github.com:yihtserns/spring-web-without-remoting.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>yihtserns</id>
+            <name>Sim Yih Tsern</name>
+            <email>sim_yihtsern@yahoo.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.31</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.springframework:spring-web</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>org.springframework:spring-web</artifact>
+                            <excludes>
+                                <exclude>org/springframework/remoting/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
