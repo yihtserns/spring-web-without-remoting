@@ -67,6 +67,7 @@
                             </excludes>
                         </filter>
                     </filters>
+                    <createSourcesJar>true</createSourcesJar>
                 </configuration>
                 <executions>
                     <execution>
