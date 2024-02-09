@@ -26,9 +26,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:yihtserns/spring-web-without-remoting.git</connection>
-        <developerConnection>scm:git:git@github.com:yihtserns/spring-web-without-remoting.git</developerConnection>
-        <url>git@github.com:yihtserns/spring-web-without-remoting.git</url>
+        <connection>scm:git:https://github.com/yihtserns/spring-web-without-remoting.git</connection>
+        <developerConnection>scm:git:https://github.com/yihtserns/spring-web-without-remoting.git</developerConnection>
+        <url>https://github.com/yihtserns/spring-web-without-remoting.git</url>
     </scm>
 
     <developers>
