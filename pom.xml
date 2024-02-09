@@ -45,6 +45,17 @@
             <artifactId>spring-web</artifactId>
             <version>5.3.31</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.31</version>
+            <classifier>javadoc</classifier>
+            <!--
+                KLUDGE: scope=optional as a hack to avoid being pulled in as transitive dependency of this project's generated jar,
+                due to (buggy behaviour of) <promoteTransitiveDependencies /> including this dependency in the generated POM.
+            -->
+            <scope>optional</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -53,30 +64,62 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.1</version>
-                <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>org.springframework:spring-web</include>
-                        </includes>
-                    </artifactSet>
-                    <filters>
-                        <filter>
-                            <artifact>org.springframework:spring-web</artifact>
-                            <excludes>
-                                <exclude>org/springframework/remoting/**</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                    <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-                    <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                    <createSourcesJar>true</createSourcesJar>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>repackage-spring-web-without-remoting-package</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <!-- ...:jar:<empty> to exclude ...:jar:javadoc -->
+                                    <include>org.springframework:spring-web:jar:</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework:spring-web</artifact>
+                                    <excludes>
+                                        <exclude>org/springframework/remoting/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <createSourcesJar>true</createSourcesJar>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Because maven-shaded-plugin does not have a <createJavadocJar ../> option, see MSHADE-245 -->
+                        <id>repackage-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.springframework:spring-web:javadoc</include>
+                                </includes>
+                                <excludes>
+                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution ../> above), injected by MSHADE-72 -->
+                                    <exclude>${project.groupId}:${project.artifactId}</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework:spring-web:javadoc</artifact>
+                                    <excludes>
+                                        <exclude>org/springframework/remoting/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>javadoc</shadedClassifierName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
