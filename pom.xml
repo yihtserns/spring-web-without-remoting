@@ -67,6 +67,8 @@
                             </excludes>
                         </filter>
                     </filters>
+                    <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
+                    <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                     <createSourcesJar>true</createSourcesJar>
                 </configuration>
                 <executions>
