@@ -50,11 +50,6 @@
             <artifactId>spring-web</artifactId>
             <version>5.3.31</version>
             <classifier>javadoc</classifier>
-            <!--
-                KLUDGE: scope=optional as a hack to avoid being pulled in as transitive dependency of this project's generated jar,
-                due to (buggy behaviour of) <promoteTransitiveDependencies /> including this dependency in the generated POM.
-            -->
-            <scope>optional</scope>
         </dependency>
     </dependencies>
 
@@ -74,19 +69,29 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <!-- ...:jar:<empty> to exclude ...:jar:javadoc -->
-                                    <include>org.springframework:spring-web:jar:</include>
+                                    <include>org.springframework:spring-web</include>
                                 </includes>
                             </artifactSet>
                             <filters>
                                 <filter>
-                                    <artifact>org.springframework:spring-web</artifact>
+                                    <!-- ...:jar:<empty> to exclude ...:jar:javadoc -->
+                                    <artifact>org.springframework:spring-web:jar:</artifact>
                                     <excludes>
                                         <exclude>org/springframework/remoting/**</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <!--
+                                        KLUDGE: This is a hack to stop spring-web:javadoc ending up in the generated POM
+                                        due to promoteTransitiveDependencies=true - only when it is included
+                                        in the artifactSet, that it won't be mis-identified as "transitive dependency"
+                                    -->
+                                    <artifact>org.springframework:spring-web:javadoc</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
+                                    </excludes>
+                                </filter>
                             </filters>
-                            <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                             <createSourcesJar>true</createSourcesJar>
                         </configuration>
