@@ -51,6 +51,12 @@
             <version>5.3.31</version>
             <classifier>javadoc</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.31</version>
+            <classifier>sources</classifier>
+        </dependency>
     </dependencies>
 
     <build>
@@ -82,7 +88,7 @@
                                 </filter>
                                 <filter>
                                     <!--
-                                        KLUDGE: This is a hack to stop spring-web:javadoc ending up in the generated POM
+                                        KLUDGE: This is a hack to stop spring-web:javadoc from ending up in the generated POM
                                         due to promoteTransitiveDependencies=true - only when it is included
                                         in the artifactSet, that it won't be mis-identified as "transitive dependency"
                                     -->
@@ -91,9 +97,19 @@
                                         <exclude>**</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <!--
+                                        KLUDGE: This is a hack to stop spring-web:sources from ending up in the generated POM
+                                        due to promoteTransitiveDependencies=true - only when it is included
+                                        in the artifactSet, that it won't be mis-identified as "transitive dependency"
+                                    -->
+                                    <artifact>org.springframework:spring-web:sources</artifact>
+                                    <excludes>
+                                        <exclude>**</exclude>
+                                    </excludes>
+                                </filter>
                             </filters>
                             <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                            <createSourcesJar>true</createSourcesJar>
                         </configuration>
                     </execution>
                     <execution>
@@ -123,6 +139,39 @@
                             </filters>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>javadoc</shadedClassifierName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!--
+                            KLUDGE: The hack added due to spring-web:javadoc not working well with promoteTransitiveDependencies=true
+                            broke createSourcesJar=true resulting in an empty sources jar, so we have to create it on our own
+                        -->
+                        <id>repackage-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.springframework:spring-web:sources</include>
+                                </includes>
+                                <excludes>
+                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution ../> above), injected by MSHADE-72 -->
+                                    <exclude>${project.groupId}:${project.artifactId}</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework:spring-web:sources</artifact>
+                                    <excludes>
+                                        <exclude>org/springframework/remoting/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>sources</shadedClassifierName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
