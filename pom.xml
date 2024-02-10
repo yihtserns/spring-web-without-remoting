@@ -7,7 +7,7 @@
     </parent>
     <groupId>com.github.yihtserns</groupId>
     <artifactId>spring-web-without-remoting</artifactId>
-    <version>5.3.31.1-SNAPSHOT</version> <!-- Version `a.b.c.d`: `a.b.c` is version of the spring-web, `d` is in case I need to publish fixes for the same `a.b.c` -->
+    <version>5.3.31.1</version> <!-- Version `a.b.c.d`: `a.b.c` is version of the spring-web, `d` is in case I need to publish fixes for the same `a.b.c` -->
     <packaging>jar</packaging>
 
     <name>Spring Web without Spring Remoting package</name>
@@ -113,7 +113,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <!-- Because maven-shaded-plugin does not have a <createJavadocJar ../> option, see MSHADE-245 -->
+                        <!-- Because maven-shaded-plugin does not have a <createJavadocJar .. /> option, see MSHADE-245 -->
                         <id>repackage-javadoc</id>
                         <phase>package</phase>
                         <goals>
@@ -125,7 +125,7 @@
                                     <include>org.springframework:spring-web:javadoc</include>
                                 </includes>
                                 <excludes>
-                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution ../> above), injected by MSHADE-72 -->
+                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution .. /> above), injected by MSHADE-72 -->
                                     <exclude>${project.groupId}:${project.artifactId}</exclude>
                                 </excludes>
                             </artifactSet>
@@ -158,7 +158,7 @@
                                     <include>org.springframework:spring-web:sources</include>
                                 </includes>
                                 <excludes>
-                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution ../> above), injected by MSHADE-72 -->
+                                    <!-- KLUDGE: Exclude this project's main artifact (created by the <execution .. /> above), injected by MSHADE-72 -->
                                     <exclude>${project.groupId}:${project.artifactId}</exclude>
                                 </excludes>
                             </artifactSet>
